@@ -80,7 +80,6 @@ jobs:
             cd frontend
             npm install
             npm iinstall oauth-sign
-            # npm run build
             npm run test
                 
   test-backend:
@@ -95,6 +94,7 @@ jobs:
           command: |
             exit 0
             cd backend
+            npm install
             npm run test
             
 #   scan-frontend:
