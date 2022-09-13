@@ -117,8 +117,8 @@ jobs:
       - restore_cache:
           keys: [backend-build]
       - run:
-          name: Scan Back-end
-         command: |
+          name: Scan front-end
+          command: |
             exit 0
             npm audit
 
