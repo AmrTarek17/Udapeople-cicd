@@ -9,13 +9,18 @@
     sudo npm install -g n
     sudo n 13.8.0
 
-- name: "install dependencies."
-  become: true
+- name: "Install nodejs"
   apt:
     update_cache: yes
-    name: ["nodejs", "npm"]
-    state: latest
-    
+    name: nodejs
+    state: present
+
+- name: "Install NPM-distributed command-line tools"
+  npm:
+    global: yes
+    name: "{{ item }}"
+  with_items:
+    - firebase-tools
 
 
 - name: "Install PM2 Globally"
