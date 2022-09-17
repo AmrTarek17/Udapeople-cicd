@@ -13,7 +13,7 @@
   become: true
   apt:
     name: nodejs
-    state: latest
+    state: present
     update_cashe: yes
 
 - name: "Install PM2 Globally"
