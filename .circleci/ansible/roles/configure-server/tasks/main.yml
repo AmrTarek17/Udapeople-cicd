@@ -9,12 +9,13 @@
     sudo npm install -g n
     sudo n 13.8.0
 
-- name: "Install Nod.js 13"
+- name: "install dependencies."
   become: true
   apt:
-    name: nodejs
-    state: present
-    update_cashe: yes
+    name: ["nodejs", "npm"]
+    state: latest
+    update_cache: yes
+
 
 - name: "Install PM2 Globally"
   npm:
