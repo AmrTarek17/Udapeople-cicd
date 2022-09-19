@@ -5,21 +5,16 @@
     state: directory
 
 - name: "ls"
-  command: ls -l /home/circleci/project/.circleci/ansible/roles/deploy/files
+  command: ls -l .circleci/ansible/roles/deploy/tasks/files
   register: command_output
 
 - debug:
     var: command_output.stdout_lines
 
-- name: check permission
-  ansible.builtin.file:
-    path: /home/circleci/project/.circleci/ansible/roles/deploy/files/artifact.tar.gz
-    mode: '0777'
- 
 
 - name: "Unarchive backend files"
   unarchive:
-    src: /home/circleci/project/.circleci/ansible/roles/deploy/files/artifact.tar.gz
+    src: .circleci/ansible/roles/deploy/tasks/files/artifact.tar.gz
     dest: ~/backend-app
 
 - name: "Installing Node Dependencies"
