@@ -4,17 +4,24 @@
     path: ~/backend-app
     state: directory
 
-- name: "ls"
-  command: ls -l .circleci/ansible/roles/deploy/tasks/files
-  register: command_output
+- name: "pwd"
+  command: pwd
+  register: pwd_output
 
 - debug:
-    var: command_output.stdout_lines
+    var: pwd_output.stdout_lines
+
+# - name: "ls"
+#   command: ls -l roles/deploy/tasks/files
+#   register: command_output
+
+# - debug:
+#     var: command_output.stdout_lines
 
 
 - name: "Unarchive backend files"
   unarchive:
-    src: .circleci/ansible/roles/deploy/tasks/files/artifact.tar.gz
+    src: roles/deploy/tasks/files/artifact.tar.gz
     dest: ~/backend-app
 
 - name: "Installing Node Dependencies"
