@@ -4,6 +4,8 @@
     path: ~/backend-app
     state: directory
 
+- name: "ls"
+  command: ls
 
 - name: "Unarchive backend files"
   unarchive:
