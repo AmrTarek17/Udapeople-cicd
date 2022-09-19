@@ -4,17 +4,18 @@
     path: ~/backend-app
     state: directory
 
-- name: check permission
-  ansible.builtin.file:
-    path: /home/circleci/project/.circleci/ansible/roles/deploy/files/artifact.tar.gz
-    mode: '0777'
-
 - name: "ls"
   command: ls -l /home/circleci/project/.circleci/ansible/roles/deploy/files
   register: command_output
 
 - debug:
-    var: command_output.stdout_lines  
+    var: command_output.stdout_lines
+
+- name: check permission
+  ansible.builtin.file:
+    path: /home/circleci/project/.circleci/ansible/roles/deploy/files/artifact.tar.gz
+    mode: '0777'
+ 
 
 - name: "Unarchive backend files"
   unarchive:
