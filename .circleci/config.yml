@@ -379,8 +379,10 @@ jobs:
           name: Save Old Workflow ID to kvdb.io
           command: |
             export OLD_WORKFLOW_ID=$(aws cloudformation \
-                list-exports --query "Exports[?Name==\'WorkflowID\'].value"\
-                --no-paginate --output text)
+                describe-stacks --stack-name InitialStack --query "Stacks[0].Outputs[0].OutputValue" --output text)
+            # export OLD_WORKFLOW_ID=$(aws cloudformation \
+            #     list-exports --query "Exports[?Name==\'WorkflowID\'].value"\
+            #     --no-paginate --output text)
             echo "Old Workflow ID: $OLD_WORKFLOW_ID"
             curl https://kvdb.io/${KVDB_BUCKET}/old_workflow_id -d "$OLD_WORKFLOW_ID"
 
