@@ -70,7 +70,7 @@ commands:
                   npm install
                   npm run migration:revert
                 fi
-            
+
 jobs:
   build-frontend:
     docker:
@@ -120,7 +120,7 @@ jobs:
             npm install
             npm install oauth-sign
             npm run test
-                
+
   test-backend:
     docker:
       - image: circleci/node:13.8.0
@@ -134,7 +134,7 @@ jobs:
             cd backend
             npm install
             npm run test
-            
+
   scan-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -170,7 +170,7 @@ jobs:
     docker:
       - image: cimg/base:stable
     steps:
-      - checkout 
+      - checkout
       - install_awscli
       - run:
           name: Ensure back-end infrastructure exist
@@ -179,8 +179,8 @@ jobs:
               --template-file .circleci/files/backend.yml \
               --tags project=udapeople \
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
-              
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+
       - run:
           name: Ensure frontend infrastructure exist
           command: |
@@ -188,8 +188,8 @@ jobs:
               --template-file .circleci/files/frontend.yml \
               --tags project=udapeople \
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
-              
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+
       - run:
           name: Add back-end ip to ansible inventory
           command: |
@@ -199,13 +199,13 @@ jobs:
             --output text)
             echo $BACKEND_PUBLIC_IP >> .circleci/ansible/inventory.txt
             cat .circleci/ansible/inventory.txt
-            
+
       - persist_to_workspace:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      
-      - destroy-environment      
+
+      - destroy-environment
 
   configure-infrastructure:
     docker:
@@ -225,7 +225,7 @@ jobs:
             cat inventory.txt
 
             ansible-playbook -i inventory.txt configure-server.yml
-      - destroy-environment      
+      - destroy-environment
 
   run-migrations:
     docker:
@@ -250,7 +250,7 @@ jobs:
             then
               curl https://kvdb.io/${KVDB_BUCKET}/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             else
-              echo "No migrations are pending" 
+              echo "No migrations are pending"
             fi
       - destroy-environment
       - revert-migrations
@@ -276,7 +276,7 @@ jobs:
               --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
-            
+
             echo "API_URL=http://$BACKEND_PUBLIC_IP:3030" > frontend/.env
             cat frontend/.env
       - run:
@@ -287,8 +287,8 @@ jobs:
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
 
       - destroy-environment
-      - revert-migrations      
-                    
+      - revert-migrations
+
   deploy-backend:
     docker:
       - image: cimg/base:stable
@@ -314,7 +314,7 @@ jobs:
             cd backend
             npm run build
             tar -czf artifact.tar.gz dist/* package*
-            
+
             cd ..
             cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/tasks/files
       - run:
@@ -329,7 +329,7 @@ jobs:
             ansible-playbook -i inventory.txt deploy-backend.yml
 
       - destroy-environment
-      - revert-migrations      
+      - revert-migrations
 
   smoke-test:
     docker:
@@ -353,20 +353,20 @@ jobs:
             else
               exit 1
             fi
-          
+
       - run:
           name: Frontend smoke test.
           command: |
             FRONTEND_WEBSITE=http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com
             if curl -s $FRONTEND_WEBSITE | grep "Welcome"
             then
-              exit 0 
-            else 
+              exit 0
+            else
               exit 1
             fi
-            
+
       - destroy-environment
-      - revert-migrations  
+      - revert-migrations
 
   cloudfront-update:
     docker:
@@ -389,7 +389,7 @@ jobs:
               --template-file .circleci/files/cloudfront.yml \
               --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --stack-name InitialStack
-              
+
       # - destroy-environment
       # - revert-migrations
 
@@ -405,17 +405,17 @@ jobs:
             command: |
               export STACKS=($(aws cloudformation list-stacks \
                   --query "StackSummaries[*].StackName" \
-                  --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
+                  --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
               echo Stack names: "${STACKS[@]}"
               export OldWorkflowID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/old_workflow_id)
-              echo Old Workflow ID: $OldWorkflowID 
+              echo Old Workflow ID: $OldWorkflowID
               if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
               then
                 aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
                 aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
                 aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
               fi
-            
+
 
 
 workflows:
@@ -448,5 +448,5 @@ workflows:
       #     requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
       #     requires: [smoke-test]
-      - cleanup:
-          requires: [cloudfront-update]
+      - cleanup
+        #  requires: [cloudfront-update]
