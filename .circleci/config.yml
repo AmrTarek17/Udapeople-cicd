@@ -62,7 +62,7 @@ commands:
               when: on_fail
               command: |
                 export SUCCESS=$(curl --insecure  https://kvdb.io/${KVDB_BUCKET}/migration_<< parameters.Workflow_ID >>)
-                echo "https://kvdb.io/${KVDB_BUCKET}/migration_<< parameters.Workflow_ID >>"
+                echo "$(curl --insecure  https://kvdb.io/${KVDB_BUCKET}/hello"
                 echo "${KVDB_BUCKET}"
                 echo "$SUCCESS"
                 # Logic for reverting the database state
