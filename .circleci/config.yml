@@ -62,7 +62,6 @@ commands:
               when: on_fail
               command: |
                 export SUCCESS=$(curl --insecure  https://kvdb.io/${KVDB_BUCKET}/migration_<< parameters.Workflow_ID >>)
-                echo "$(curl https://kvdb.io/${KVDB_BUCKET}/hello"
                 echo "${KVDB_BUCKET}"
                 echo "$SUCCESS"
                 # Logic for reverting the database state
@@ -250,7 +249,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-              curl https://kvdb.io/${KVDB_BUCKET}/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+              curl -d '1' https://kvdb.io/${KVDB_BUCKET}/migration_${CIRCLE_WORKFLOW_ID:0:7}  
             else
               echo "No migrations are pending"
             fi
